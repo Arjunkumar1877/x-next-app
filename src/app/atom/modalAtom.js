@@ -5,3 +5,7 @@ export const modalState = atom({
     default: false
 });
 
+export const postIdState = atom({
+    key: 'postIdState',
+    default: ''
+});
