@@ -1,10 +1,12 @@
 "use client";
 
-import { SessionProvider } from 'next-auth/react';
+import { SessionProvider } from "next-auth/react";
+import { RecoilRoot } from "recoil";
 
-
-export default function SessionWrapper({children}) {
+export default function SessionWrapper({ children }) {
   return (
-    <SessionProvider>{children}</SessionProvider>
-  )
+    <SessionProvider>
+      <RecoilRoot>{children}</RecoilRoot>
+    </SessionProvider>
+  );
 }
