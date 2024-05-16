@@ -65,7 +65,7 @@ export default function Input() {
     const handleSubmit = async()=>{
       setPostLoading(true);
      const docRef = await addDoc(collection(db, 'posts'), {
-      uid: session.user.uuid, 
+      uid: session.user.uid, 
       name: session.user.name,
       username: session.user.username,
       text: text,
