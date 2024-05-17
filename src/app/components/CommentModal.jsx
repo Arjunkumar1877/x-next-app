@@ -6,8 +6,9 @@ import { modalState, postIdState } from '../atom/modalAtom';
 import Modal from 'react-modal';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
-import { doc, getFirestore, onSnapshot } from 'firebase/firestore';
+import { addDoc, collection, doc, getFirestore, onSnapshot, serverTimestamp } from 'firebase/firestore';
 import { app } from '../firebase';
+import { useRouter } from 'next/navigation';
 
 
 export default function CommentModal() {
@@ -17,6 +18,7 @@ export default function CommentModal() {
     const [postId, setPostId] = useRecoilState(postIdState);
     const [post, setPost] = useState({})
     const db = getFirestore(app);
+    const router = useRouter()
 
     useEffect(()=>{
         if(postId !== ''){
@@ -32,6 +34,21 @@ export default function CommentModal() {
         }
     }, [postId]);
 
+    const sendComment = async()=>{
+      addDoc(collection(db, 'posts', postId, 'comments'),{
+        name: session.user.name,
+        username: session.user.username,
+        userImage: session.user.image,
+        comment: input,
+        timestamp: serverTimestamp(),
+      }).then(()=>{
+        setInput('');
+        setOpen(false);
+        router.push(`/posts/${postId}`)
+      })
+    }
+
+    
   return (
     <div>
         {
@@ -58,7 +75,7 @@ export default function CommentModal() {
                         </textarea>
                     </div>
                     <div className="flex items-center justify-end pt-2.5">
-                      <button disabled={input.trim() === ''} className="bg-blue-400 text-white px-4 py-1.5 rounded-full font-bold shadow-md hover:brightness-95 disabled:opacity-50">
+                      <button disabled={input.trim() === ''} onClick={sendComment} className="bg-blue-400 text-white px-4 py-1.5 rounded-full font-bold shadow-md hover:brightness-95 disabled:opacity-50">
                         Reply
                       </button>
                     </div>
