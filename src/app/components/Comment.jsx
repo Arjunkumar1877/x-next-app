@@ -1,10 +1,10 @@
 import { collection, deleteDoc, doc, getFirestore, onSnapshot, serverTimestamp, setDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react'
-import { HiDotsHorizontal, HiHeart, HiOutlineHeart } from 'react-icons/hi'
+import { HiDotsHorizontal, HiHeart, HiOutlineHeart, HiOutlineTrash } from 'react-icons/hi'
 import { app } from '../firebase';
-import { useSession } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 
-export default function Comment({comment, commentId, originalPostId}) {
+export default function Comment({comment, commentId, originalPostId, uid}) {
     const [isLiked, setIsLiked] = useState(false);
     const [likes, setLikes] = useState([]);
     const db = getFirestore(app);
@@ -26,6 +26,17 @@ export default function Comment({comment, commentId, originalPostId}) {
           }
           
       };
+
+      const deleteComment = async () => {
+        try {
+          const commentRef = doc(db, "posts", originalPostId, "comments", commentId);
+          await deleteDoc(commentRef);
+          console.log("Comment deleted successfully");
+        } catch (error) {
+          console.error("Error deleting comment: ", error);
+        }
+      };
+      
 
     useEffect(() => {
         onSnapshot(collection(db, "posts", originalPostId, 'comments', commentId, "likes"), (snapshot) => {
@@ -61,22 +72,45 @@ export default function Comment({comment, commentId, originalPostId}) {
 <p className="text-gray-800 text-xs my-3 ">{comment?.comment}</p>
 
 <div className="flex items-center">
-{isLiked ? (
-          <HiHeart
-            onClick={likePost}
-            className="h-8 w-8 cursor-pointer rounded-full transition duration-500 ease-in-out p-2 text-red-600 hover:text-red-500 hover:bg-red-100"
-          />
-        ) : (
-          <HiOutlineHeart
-            onClick={likePost}
-            className="h-8 w-8 cursor-pointer rounded-full transition duration-500 ease-in-out p-2 hover:text-red-500 hover:bg-red-100"
-          />
-        )}
+
+{
+  session ? (
+    isLiked ? (
+      <HiHeart
+        onClick={likePost}
+        className="h-8 w-8 cursor-pointer rounded-full transition duration-500 ease-in-out p-2 text-red-600 hover:text-red-500 hover:bg-red-100"
+      />
+    ) : (
+      <HiOutlineHeart
+        onClick={likePost}
+        className="h-8 w-8 cursor-pointer rounded-full transition duration-500 ease-in-out p-2 hover:text-red-500 hover:bg-red-100"
+      />
+    )
+  ) : (
+    <HiHeart
+    onClick={ ()=> signIn()}
+    className="h-8 w-8 cursor-pointer rounded-full transition duration-500 ease-in-out p-2 text-red-600 hover:text-red-500 hover:bg-red-100"
+  />
+  )
+
+}
+
 {
   likes.length > 0 && (
     <span className={`text-xs ${isLiked && 'text-red-600'}`}>
       {likes.length}
     </span>
+  )
+}
+
+
+{
+  session ?  (
+    <HiOutlineTrash onClick={deleteComment} className="h-8 w-8 cursor-pointer rounded-full transition duration-500 ease-in-out p-2 hover:text-red-500 hover:bg-red-100" />
+
+  ) : (
+    <HiOutlineTrash onClick={()=> signIn()} className="h-8 w-8 cursor-pointer rounded-full transition duration-500 ease-in-out p-2 hover:text-red-500 hover:bg-red-100" />
+
   )
 }
 

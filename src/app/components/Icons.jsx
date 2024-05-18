@@ -128,9 +128,7 @@ export default function Icons({ id, uid }) {
     session?.user?.uid === uid ? (
         <HiOutlineTrash onClick={deletePost} className="h-8 w-8 cursor-pointer rounded-full transition duration-500 ease-in-out p-2 hover:text-red-500 hover:bg-red-100" />
     ) :(
-        <>
-        .
-        </>
+        <>.</>
     )
 }
      

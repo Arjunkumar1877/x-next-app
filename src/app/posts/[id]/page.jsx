@@ -12,6 +12,7 @@ export default async function postPage({params}) {
   const db = getFirestore(app)
  const querySnapshot = await getDoc(doc(db, 'posts', params.id));
  data = { ...querySnapshot.data(), id: querySnapshot.id};
+ console.log(data)
   return (
     <div className='max-w-xl mx-auto border-r border-l min-h-screen '>
       <div className="flex items-center space-x-2 py-2 px-3 sticky top-0 z-50 bg-white border-b border-gray-200">
@@ -21,7 +22,7 @@ export default async function postPage({params}) {
         <h2 className='sm:text-lg '>Back</h2>
       </div>
       <Post post={data} id={data.id} />
-      <Comments id={params.id} />
+      <Comments id={params.id} uid={data.uid} />
     </div>
   )
 }
