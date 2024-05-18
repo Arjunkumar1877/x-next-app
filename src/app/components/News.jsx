@@ -13,10 +13,10 @@ export default function News() {
     },[])
   return (
     <div className='text-gray-700 space-y-3 bg-gray-100 rounded-xl pt-2'>
-                <h4 className="font-bold text-xl px-4">What's happening</h4>
+                <h4 className="font-bold text-xl px-4">Whats happening</h4>
        {
         news && news.slice(0, articlesNum).map((article)=>(
-            <div className="" key={article.url}>
+            <div  key={article.url}>
                 <a href={article.url} target="_blank">
                     <div className="flex items-center justify-between px-4 py-2 space-x-1 hover:bg-gray-200 transition duration-200">
                         <div className="space-y-0.5">
