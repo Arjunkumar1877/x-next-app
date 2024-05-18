@@ -27,8 +27,6 @@ export default function Comment({comment, commentId, originalPostId}) {
           
       };
 
-  
-
     useEffect(() => {
         onSnapshot(collection(db, "posts", originalPostId, 'comments', commentId, "likes"), (snapshot) => {
           setLikes(snapshot.docs);
